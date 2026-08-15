@@ -33,7 +33,12 @@ def analyze_media(url):
         'quiet': True,
         'no_warnings': True,
         'format': 'all',
-        'ignoreerrors': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web', 'mweb']
+            }
+        }
     }
     
     try:
@@ -111,7 +116,16 @@ def run_download_job(job_id, url, mode, quality, audio_format):
             job_registry[job_id]['status'] = 'extracting'
             job_registry[job_id]['message'] = 'Initializing extraction...'
 
-        info_opts = {'quiet': True, 'skip_download': True, 'ignoreerrors': True}
+        info_opts = {
+            'quiet': True,
+            'skip_download': True,
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'web', 'mweb']
+                }
+            }
+        }
         title = 'media'
         with YoutubeDL(info_opts) as ydl:
             info_dict = ydl.extract_info(url, download=False)
@@ -121,6 +135,12 @@ def run_download_job(job_id, url, mode, quality, audio_format):
         ydl_opts = {
             'progress_hooks': [lambda d: progress_hook(d, job_id)],
             'noplaylist': True,
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'web', 'mweb']
+                }
+            }
         }
 
         if mode == 'video':
@@ -162,4 +182,4 @@ def run_download_job(job_id, url, mode, quality, audio_format):
         with job_registry_lock:
             job_registry[job_id]['status'] = 'failed'
             job_registry[job_id]['error'] = str(e)
-          
+            
