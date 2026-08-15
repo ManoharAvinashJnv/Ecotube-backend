@@ -14,6 +14,19 @@ DOWNLOAD_DIR = get_default_download_dir()
 job_registry = {}
 job_registry_lock = threading.Lock()
 
+# Datacenter IP Bot Bypass Options
+YTDL_BASE_OPTS = {
+    'quiet': True,
+    'no_warnings': True,
+    'user_agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
+    'extractor_args': {
+        'youtube': {
+            'player_client': ['ios', 'mweb', 'android'],
+            'player_skip': ['webpage', 'configs']
+        }
+    }
+}
+
 def sanitize_filename(name):
     cleaned = re.sub(r'[\\/*?:"<>|]', "", name)
     return re.sub(r'\s+', " ", cleaned).strip()
@@ -28,18 +41,12 @@ def get_unique_filepath(directory, base_filename, ext):
     return candidate
 
 def analyze_media(url):
-    ydl_opts = {
+    ydl_opts = YTDL_BASE_OPTS.copy()
+    ydl_opts.update({
         'skip_download': True,
-        'quiet': True,
-        'no_warnings': True,
         'format': 'all',
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'web', 'mweb']
-            }
-        }
-    }
+        'ignoreerrors': True,
+    })
     
     try:
         with YoutubeDL(ydl_opts) as ydl:
@@ -116,32 +123,20 @@ def run_download_job(job_id, url, mode, quality, audio_format):
             job_registry[job_id]['status'] = 'extracting'
             job_registry[job_id]['message'] = 'Initializing extraction...'
 
-        info_opts = {
-            'quiet': True,
-            'skip_download': True,
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android', 'web', 'mweb']
-                }
-            }
-        }
+        info_opts = YTDL_BASE_OPTS.copy()
+        info_opts.update({'skip_download': True})
+        
         title = 'media'
         with YoutubeDL(info_opts) as ydl:
             info_dict = ydl.extract_info(url, download=False)
             if info_dict:
                 title = info_dict.get('title', 'media')
 
-        ydl_opts = {
+        ydl_opts = YTDL_BASE_OPTS.copy()
+        ydl_opts.update({
             'progress_hooks': [lambda d: progress_hook(d, job_id)],
             'noplaylist': True,
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android', 'web', 'mweb']
-                }
-            }
-        }
+        })
 
         if mode == 'video':
             res_map = {
