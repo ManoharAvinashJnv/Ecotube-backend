@@ -14,7 +14,10 @@ DOWNLOAD_DIR = get_default_download_dir()
 job_registry = {}
 job_registry_lock = threading.Lock()
 
-# Datacenter IP Bot Bypass Options
+# Render secret path support for cookies
+COOKIE_PATH = "/etc/secrets/cookies.txt" if os.path.exists("/etc/secrets/cookies.txt") else "cookies.txt"
+
+# Datacenter IP Bot Bypass + Base Options
 YTDL_BASE_OPTS = {
     'quiet': True,
     'no_warnings': True,
@@ -26,6 +29,10 @@ YTDL_BASE_OPTS = {
         }
     }
 }
+
+# Attach cookie file if exists on server
+if os.path.exists(COOKIE_PATH):
+    YTDL_BASE_OPTS['cookiefile'] = COOKIE_PATH
 
 def sanitize_filename(name):
     cleaned = re.sub(r'[\\/*?:"<>|]', "", name)
@@ -177,4 +184,4 @@ def run_download_job(job_id, url, mode, quality, audio_format):
         with job_registry_lock:
             job_registry[job_id]['status'] = 'failed'
             job_registry[job_id]['error'] = str(e)
-            
+                
