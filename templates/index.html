@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOTUBE — Universal Media Downloader</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo-area">
+                <div class="logo-icon">▶</div>
+                <div>
+                    <h1>ECOTUBE</h1>
+                    <p class="subtitle">Universal Media Downloader</p>
+                </div>
+            </div>
+            <button id="themeToggle" class="theme-btn">🌙</button>
+        </header>
+
+        <div class="main-tabs">
+            <button class="main-tab active" id="tabDownloader">Downloader</button>
+            <button class="main-tab" id="tabWA">WhatsApp Saver</button>
+        </div>
+
+        <main id="downloaderSection" class="main-card">
+            <div class="input-group">
+                <label for="urlInput">Media Link</label>
+                <div class="input-row">
+                    <input type="url" id="urlInput" placeholder="Paste YouTube, Instagram link..." autocomplete="off">
+                    <button id="pasteBtn" class="btn secondary">Paste</button>
+                </div>
+                <button id="analyzeBtn" class="btn primary full-width">Analyze Link</button>
+            </div>
+
+            <div id="toast" class="toast hidden"></div>
+
+            <div id="mediaDetails" class="media-details hidden">
+                <div class="media-preview">
+                    <img id="mediaThumb" src="" alt="Thumbnail">
+                    <div class="media-meta">
+                        <h3 id="mediaTitle">Title</h3>
+                    </div>
+                </div>
+
+                <div class="mode-selector">
+                    <button class="mode-tab active" data-mode="video">Video</button>
+                    <button class="mode-tab" data-mode="audio">Audio</button>
+                </div>
+
+                <div id="videoControls" class="control-panel">
+                    <select id="qualitySelect" class="select-box"></select>
+                </div>
+
+                <div id="audioControls" class="control-panel hidden">
+                    <select id="audioFormatSelect" class="select-box">
+                        <option value="mp3">MP3</option>
+                        <option value="m4a">M4A</option>
+                    </select>
+                </div>
+
+                <button id="downloadBtn" class="btn accent full-width">Start Download</button>
+            </div>
+
+            <div id="progressCard" class="progress-card hidden">
+                <div class="progress-header">
+                    <span id="statusText">Downloading...</span>
+                    <span id="percentText">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+            </div>
+        </main>
+
+        <main id="waSection" class="main-card hidden">
+            <button id="loadWAStatusesBtn" class="btn primary full-width">Refresh WhatsApp Statuses</button>
+            <div id="waStatusGrid" class="wa-grid"></div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2026 Made By Manohar Avinash</p>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
