@@ -14,25 +14,17 @@ DOWNLOAD_DIR = get_default_download_dir()
 job_registry = {}
 job_registry_lock = threading.Lock()
 
-# Render secret path support for cookies
-COOKIE_PATH = "/etc/secrets/cookies.txt" if os.path.exists("/etc/secrets/cookies.txt") else "cookies.txt"
-
-# Datacenter IP Bot Bypass + Base Options
+# Datacenter IP Bypass using TV Embedded & Web Creator Clients (No Cookies Needed)
 YTDL_BASE_OPTS = {
     'quiet': True,
     'no_warnings': True,
-    'user_agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
     'extractor_args': {
         'youtube': {
-            'player_client': ['ios', 'mweb', 'android'],
-            'player_skip': ['webpage', 'configs']
+            'player_client': ['tv_embedded', 'web_creator', 'mweb', 'android'],
+            'player_skip': ['configs']
         }
     }
 }
-
-# Attach cookie file if exists on server
-if os.path.exists(COOKIE_PATH):
-    YTDL_BASE_OPTS['cookiefile'] = COOKIE_PATH
 
 def sanitize_filename(name):
     cleaned = re.sub(r'[\\/*?:"<>|]', "", name)
@@ -184,4 +176,4 @@ def run_download_job(job_id, url, mode, quality, audio_format):
         with job_registry_lock:
             job_registry[job_id]['status'] = 'failed'
             job_registry[job_id]['error'] = str(e)
-                
+            
